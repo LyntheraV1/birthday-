@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Special Day 🎂</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  font-family:'Nunito',sans-serif;
+  background: radial-gradient(circle at 30% 20%, #2a2a3a, #0b0b12 70%);
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  overflow:hidden;
+  color:#fff;
+}
+
+.page{display:none;}
+.show{display:block;}
+
+.box{
+  background:rgba(255,255,255,0.08);
+  padding:32px;
+  border-radius:22px;
+  backdrop-filter: blur(6px);
+  box-shadow:0 0 40px rgba(255,255,255,0.08);
+  max-width:520px;
+  z-index:2;
+}
+
+button{
+  padding:12px 18px;
+  border:none;
+  border-radius:14px;
+  font-size:16px;
+  background:#ff4081;
+  color:white;
+  cursor:pointer;
+  margin-top:14px;
+  font-family:'Nunito',sans-serif;
+}
+
+.cake-sil{
+  position:fixed;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:140px;
+  opacity:.08;
+  filter:brightness(0) invert(1);
+  pointer-events:none;
+  z-index:1;
+}
+
+.firefly{
+  position:fixed;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#ffe66d;
+  box-shadow:0 0 12px #ffe66d;
+  animation:blink 2s infinite alternate, float 12s linear infinite;
+}
+
+@keyframes blink{
+  from{opacity:.2}
+  to{opacity:1}
+}
+
+@keyframes float{
+  from{transform:translateY(110vh)}
+  to{transform:translateY(-10vh)}
+}
+
+.star{
+  position:fixed;
+  font-size:40px;
+  cursor:pointer;
+  z-index:3;
+  animation:pop .2s ease;
+}
+
+@keyframes pop{
+  from{transform:scale(.4)}
+  to{transform:scale(1)}
+}
+
+/* ===== PART E EXTRA STYLE ===== */
+.fade-out{animation:fadeOut 1.5s forwards;}
+@keyframes fadeOut{to{opacity:0;}}
+.fade-in{animation:fadeIn 2s forwards;}
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(20px);}
+  to{opacity:1; transform:translateY(0);}
+}
+.cursor{
+  display:inline-block;
+  width:2px;
+  background:white;
+  margin-left:3px;
+  animation:blink2 .7s infinite;
+}
+@keyframes blink2{
+  0%,100%{opacity:1;}
+  50%{opacity:0;}
+}
+</style>
+</head>
+
+<body>
+
+<!-- ===== PART A ===== -->
+<div id="partA" class="page show">
+  <div class="box">
+    <h2>Hari ini hari spesial kamu yaa</h2>
+    <p>Kita main gamee bentar yaa🎂</p>
+    <button onclick="mulaiGame()">Mulai 🎮</button>
+  </div>
+</div>
+
+<!-- ===== PART B ===== -->
+<div id="partB" class="page">
+  <div class="box">
+    <h2>🎮 Mini Game</h2>
+    <p>Tangkap 10 bintang dulu ✨</p>
+    <p>Skor: <span id="score">0</span>/10</p>
+    <button id="lanjutBtn" style="display:none" onclick="showPartC()">Lanjut ➜</button>
+  </div>
+</div>
+
+<!-- ===== PART C ===== -->
+<div id="partC" class="page">
+  <div class="box">
+    <h2>Untuk Lintang ✨<br>dari aku</h2>
+    <p id="typing"></p>
+    <button onclick="showPartD()">🎊 mau lanjutt?</button>
+  </div>
+</div>
+
+<!-- ===== PART D ===== -->
+<div id="partD" class="page">
+  <div class="box">
+    <h2>🎂 Make a Wish</h2>
+    <div style="font-size:120px;cursor:pointer" onclick="tiupKue()">🎂</div>
+    <p id="semangat"></p>
+    <button onclick="showPartE()">Lanjut Terakhir ➜</button>
+  </div>
+</div>
+
+<!-- ===== PART E ===== -->
+<div id="partE" class="page">
+  <div class="box" id="fakeEnding">
+    <p>
+      Yaudah, segitu aja yang bisa aku sampaikan.<br>
+      Terima kasih udah dengerin dari awal sampai akhir.
+    </p>
+    <button onclick="startTwist()">Selesai</button>
+  </div>
+
+  <div class="box" id="twistBox" style="display:none;">
+    <p id="twistText"></p>
+  </div>
+</div>
+
+<div class="cake-sil">🎂</div>
+
+<script>
+/* ===== BACKGROUND EFFECT ===== */
+for(let i=0;i<25;i++){
+  let f=document.createElement("div");
+  f.className="firefly";
+  f.style.left=Math.random()*100+"vw";
+  f.style.animationDuration=(8+Math.random()*8)+"s";
+  document.body.appendChild(f);
+}
+
+function show(id){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("show"));
+  document.getElementById(id).classList.add("show");
+}
+
+/* ===== PART A & B ===== */
+function mulaiGame(){
+  show("partB");
+  spawnStar();
+}
+
+let skor=0;
+
+function spawnStar(){
+  if(skor>=10){
+    lanjutBtn.style.display="inline-block";
+    return;
+  }
+
+  let s=document.createElement("div");
+  s.className="star";
+  s.innerHTML="⭐";
+  s.style.left=Math.random()*90+"vw";
+  s.style.top=Math.random()*85+"vh";
+
+  s.onclick=()=>{
+    skor++;
+    score.innerText=skor;
+    s.remove();
+    spawnStar();
+  };
+
+  document.body.appendChild(s);
+
+  setTimeout(()=>{
+    if(document.body.contains(s)) s.remove();
+    spawnStar();
+  },1300);
+}
+
+function showPartC(){
+  show("partC");
+  mulaiKetik();
+}
+
+/* ===== PART C ===== */
+const pesan = `Selamat ulang tahun yaa 🎂
+Semoga harimu cerah,
+dan senyummu selalu dijaga ✨
+Aku selalu dukung kamu(anjayy)kalo kamu ada keluh kesah cari tempat yg mau dengerin keluh kesah kamu oke? (contohnya gweh)🌸`;
+
+function mulaiKetik(){
+  const el=document.getElementById("typing");
+  el.innerHTML="";
+  let i=0;
+  function ketik(){
+    if(i<pesan.length){
+      el.innerHTML += pesan[i]=="\n"?"<br>":pesan[i];
+      i++;
+      setTimeout(ketik,35);
+    }
+  }
+  ketik();
+}
+
+/* ===== CONFETTI ===== */
+function confettiHujan(){
+  for(let i=0;i<80;i++){
+    let c=document.createElement("div");
+    c.style.position="fixed";
+    c.style.width="6px";
+    c.style.height="6px";
+    c.style.background="hsl("+Math.random()*360+",80%,60%)";
+    c.style.left=Math.random()*100+"vw";
+    c.style.top="-10px";
+    c.style.zIndex=5;
+    c.style.transition="top 2.5s linear";
+    document.body.appendChild(c);
+    setTimeout(()=>c.style.top="110vh",10);
+    setTimeout(()=>c.remove(),2600);
+  }
+}
+
+/* ===== PART D ===== */
+function showPartD(){
+  confettiHujan();
+  show("partD");
+  mulaiKetikSemangat();
+}
+
+const teksSemangat = `Kita make a wish yaa🔥
+semogaa hati kamuu tetep kuat untuk jalan ke depan💪
+usaha dan kerja keras mu itu nyata✌️
+yg penting kamu harus yakin sama pendirian kamu.
+kalau ragu, ingat:
+ngga sendirian okee?
+(soalnya ada akuu🗿)
+(canda)`;
+
+function mulaiKetikSemangat(){
+  const el=document.getElementById("semangat");
+  el.innerHTML="";
+  let i=0;
+  function ketik(){
+    if(i<teksSemangat.length){
+      el.innerHTML += teksSemangat[i]=="\n"?"<br>":teksSemangat[i];
+      i++;
+      setTimeout(ketik,35);
+    }
+  }
+  ketik();
+}
+
+function tiupKue(){
+  confettiHujan();
+}
+
+/* ===== PART E ===== */
+function showPartE(){
+  show("partE");
+}
+
+function startTwist(){
+  document.getElementById("fakeEnding").classList.add("fade-out");
+  setTimeout(()=>{
+    document.getElementById("fakeEnding").style.display="none";
+    showTwist();
+  },1500);
+}
+
+function typeEffect(element, text, speed){
+  let i=0;
+  element.innerHTML="";
+  let cursor=document.createElement("span");
+  cursor.className="cursor";
+  element.appendChild(cursor);
+
+  function typing(){
+    if(i<text.length){
+      cursor.insertAdjacentText("beforebegin",text.charAt(i));
+      i++;
+      setTimeout(typing,speed);
+    }else{
+      cursor.remove();
+    }
+  }
+  typing();
+}
+
+function showTwist(){
+  let box=document.getElementById("twistBox");
+  box.style.display="block";
+  box.classList.add("fade-in");
+
+  const message = 
+`Oh iya… satu hal lagi.
+
+Sebenernya semua ini cuma alasan.
+
+Alasan biar aku punya kesempatan ngobrol  sama kamu.
+
+Karena jujur aja…
+aku senang bisa bareng kamu sampai sekarang(meskipun lewat online).Soalnya waktu ngga ada yg tau bisa aja tiba tiba asing kan ngga tau kapan pastinya ya intinya makasihh udah mau ladenin orang kya aku.`;
+
+  typeEffect(document.getElementById("twistText"),message,40);
+
+  // tombol muncul setelah teks selesai
+  setTimeout(()=>{
+    let btn=document.createElement("button");
+    btn.innerText="Balas";
+
+    btn.onclick=function(){
+      window.location.href="https://api.whatsapp.com/send?text=Makasihhh%20sayanggg%20💕";
+    };
+
+    box.appendChild(btn);
+  }, message.length * 40 + 500);
+}
+</script>
+
+</body>
+</html> 
